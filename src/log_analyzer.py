@@ -1,20 +1,12 @@
 import json
 import sys
 from pathlib import Path
-
 def analyze_log(log_text):
     """Identify common CI/CD pipeline failures."""
 
     normalized_log = log_text.lower()
 
-    if "assertionerror" in normalized_log or "failed" in normalized_log:
-        return {
-            "status": "FAILED",
-            "failure_type": "Test Failure",
-            "message": "A test failed. Check the assertion and expected values."
-        }
-
-    elif (
+    if (
         "modulenotfounderror" in normalized_log
         or "importerror" in normalized_log
     ):
@@ -32,6 +24,17 @@ def analyze_log(log_text):
             "status": "FAILED",
             "failure_type": "Timeout",
             "message": "An operation exceeded its time limit. Investigate execution time."
+        }
+
+    elif (
+        "assertionerror" in normalized_log
+        or "failed test" in normalized_log
+        or "failed test_" in normalized_log
+    ):
+        return {
+            "status": "FAILED",
+            "failure_type": "Test Failure",
+            "message": "A test failed. Check the assertion and expected values."
         }
 
     return {
