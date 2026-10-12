@@ -1,8 +1,7 @@
 import json
 import sys
-from pathlib import Path
 def analyze_log(log_text):
-    """Identify common CI/CD pipeline failures."""
+    """Identify common CI/CD failures and provide supporting evidence."""
 
     normalized_log = log_text.lower()
 
@@ -10,37 +9,58 @@ def analyze_log(log_text):
         "modulenotfounderror" in normalized_log
         or "importerror" in normalized_log
     ):
-        return {
-            "status": "FAILED",
-            "failure_type": "Dependency Failure",
-            "message": "A Python module could not be imported. Check dependencies."
-        }
+        failure_type = "Dependency Failure"
+        message = (
+            "A Python module could not be imported. "
+            "Check dependencies."
+        )
+        patterns = ("modulenotfounderror", "importerror")
 
     elif (
         "timeouterror" in normalized_log
         or "timed out" in normalized_log
     ):
-        return {
-            "status": "FAILED",
-            "failure_type": "Timeout",
-            "message": "An operation exceeded its time limit. Investigate execution time."
-        }
+        failure_type = "Timeout"
+        message = (
+            "An operation exceeded its time limit. "
+            "Investigate execution time."
+        )
+        patterns = ("timeouterror", "timed out")
 
     elif (
         "assertionerror" in normalized_log
         or "failed test" in normalized_log
         or "failed test_" in normalized_log
     ):
+        failure_type = "Test Failure"
+        message = (
+            "A test failed. Check the assertion "
+            "and expected values."
+        )
+        patterns = ("assertionerror", "failed test")
+
+    else:
         return {
-            "status": "FAILED",
-            "failure_type": "Test Failure",
-            "message": "A test failed. Check the assertion and expected values."
+            "status": "UNKNOWN",
+            "failure_type": "Unclassified",
+            "message": "No recognized failure pattern was found.",
+            "evidence": None,
         }
 
+    evidence = next(
+        (
+            line.strip()
+            for line in log_text.splitlines()
+            if any(pattern in line.lower() for pattern in patterns)
+        ),
+        None,
+    )
+
     return {
-        "status": "UNKNOWN",
-        "failure_type": "Unclassified",
-        "message": "No recognized failure pattern was found."
+        "status": "FAILED",
+        "failure_type": failure_type,
+        "message": message,
+        "evidence": evidence,
     }
 def main():
     """Read a log file and print its analysis."""
