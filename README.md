@@ -1,3 +1,6 @@
+![CI Tests](https://github.com/Mydhilimaram/pipelinepilot-ai/actions/workflows/tests.yml/badge.svg)
+
+![Python](https://img.shields.io/badge/Python-3.12-blue)
 # PipelinePilot AI
 
 ## Overview
