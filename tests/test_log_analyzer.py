@@ -78,6 +78,21 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertEqual(result["status"], "FAILED")
         self.assertEqual(result["failure_type"], "Dependency Failure")
 
+    def test_returns_evidence_for_dependency_failure(self):
+        log_text = (
+            "Installing dependencies...\n"
+            "ModuleNotFoundError: No module named 'requests'\n"
+            "Pipeline failed."
+        )
+
+        result = analyze_log(log_text)
+
+        self.assertEqual(result["failure_type"], "Dependency Failure")
+        self.assertEqual(
+            result["evidence"],
+            "ModuleNotFoundError: No module named 'requests'"
+        )
+
 
 if __name__ == "__main__":
     unittest.main()
