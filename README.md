@@ -32,3 +32,17 @@ Currently in the initial development stage.
 ## Goal
 
 Build a practical, reliable developer tool that demonstrates DevOps automation and AI engineering skills.
+
+## Getting Started
+
+### Prerequisites
+- Python 3.12 or later
+- Git
+
+### Run the Analyzer
+
+Clone the repository:
+
+```bash
+git clone https://github.com/YOUR_USERNAME/pipelinepilot-ai.git
+cd pipelinepilot-ai
