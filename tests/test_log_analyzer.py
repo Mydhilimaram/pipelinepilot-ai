@@ -62,6 +62,14 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertEqual(result["status"], "FAILED")
         self.assertEqual(result["failure_type"], "Test Failure")
 
+    def test_detects_lowercase_timeout(self):
+        log_text = "the operation timed out"
+
+        result = analyze_log(log_text)
+
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(result["failure_type"], "Timeout")
+
 
 if __name__ == "__main__":
     unittest.main()
