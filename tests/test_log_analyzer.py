@@ -1,3 +1,4 @@
+from pathlib import Path
 import unittest
 
 from src.log_analyzer import analyze_log
@@ -34,6 +35,24 @@ class TestLogAnalyzer(unittest.TestCase):
 
         self.assertEqual(result["status"], "UNKNOWN")
         self.assertEqual(result["failure_type"], "Unclassified")
+
+    def test_sample_test_failure_log(self):
+        log_path = Path("sample_logs/test_failure.log")
+        result = analyze_log(log_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(result["failure_type"], "Test Failure")
+
+    def test_sample_dependency_failure_log(self):
+        log_path = Path("sample_logs/dependency_failure.log")
+        result = analyze_log(log_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(result["failure_type"], "Dependency Failure")
+
+    def test_sample_timeout_failure_log(self):
+        log_path = Path("sample_logs/timeout_failure.log")
+        result = analyze_log(log_path.read_text(encoding="utf-8"))
+
+        self.assertEqual(result["failure_type"], "Timeout")
 
 
 if __name__ == "__main__":
