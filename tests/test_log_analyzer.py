@@ -54,6 +54,14 @@ class TestLogAnalyzer(unittest.TestCase):
 
         self.assertEqual(result["failure_type"], "Timeout")
 
+    def test_detects_lowercase_test_failure(self):
+        log_text = "failed test_payment.py"
+
+        result = analyze_log(log_text)
+
+        self.assertEqual(result["status"], "FAILED")
+        self.assertEqual(result["failure_type"], "Test Failure")
+
 
 if __name__ == "__main__":
     unittest.main()
