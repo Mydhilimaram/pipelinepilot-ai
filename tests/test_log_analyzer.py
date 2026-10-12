@@ -29,6 +29,12 @@ class TestLogAnalyzer(unittest.TestCase):
         self.assertEqual(result["status"], "UNKNOWN")
         self.assertEqual(result["failure_type"], "Unclassified")
 
+    def test_empty_log(self):
+        result = analyze_log("")
+
+        self.assertEqual(result["status"], "UNKNOWN")
+        self.assertEqual(result["failure_type"], "Unclassified")
+
 
 if __name__ == "__main__":
     unittest.main()
