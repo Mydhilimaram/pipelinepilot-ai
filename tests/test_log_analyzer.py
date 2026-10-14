@@ -107,5 +107,19 @@ class TestLogAnalyzer(unittest.TestCase):
             "AssertionError: Expected 100, received 120."
         )
 
+    def test_dependency_failure_severity(self):
+        result = analyze_log(
+            "ModuleNotFoundError: No module named 'requests'"
+        )
+        self.assertEqual(result["severity"], "high")
+
+    def test_timeout_failure_severity(self):
+        result = analyze_log("TimeoutError: Operation timed out")
+        self.assertEqual(result["severity"], "medium")
+
+    def test_unknown_failure_severity(self):
+        result = analyze_log("Pipeline started successfully")
+        self.assertEqual(result["severity"], "unknown")
+
 if __name__ == "__main__":
     unittest.main()
