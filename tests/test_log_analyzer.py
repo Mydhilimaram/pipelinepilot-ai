@@ -121,5 +121,17 @@ class TestLogAnalyzer(unittest.TestCase):
         result = analyze_log("Pipeline started successfully")
         self.assertEqual(result["severity"], "unknown")
 
+    def test_dependency_failure_suggestion(self):
+        result = analyze_log(
+            "ModuleNotFoundError: No module named 'requests'"
+        )
+        self.assertIn("suggestion", result)
+        self.assertIn("requirements.txt", result["suggestion"])
+
+    def test_timeout_failure_suggestion(self):
+        result = analyze_log("TimeoutError: Operation timed out")
+        self.assertIn("suggestion", result)
+        self.assertIn("timeout settings", result["suggestion"])
+
 if __name__ == "__main__":
     unittest.main()
