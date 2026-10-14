@@ -1,5 +1,8 @@
 import json
 import sys
+from pathlib import Path
+
+
 def analyze_log(log_text):
     """Identify common CI/CD failures and provide supporting evidence."""
 
@@ -10,6 +13,7 @@ def analyze_log(log_text):
         or "importerror" in normalized_log
     ):
         failure_type = "Dependency Failure"
+        severity = "high"
         message = (
             "A Python module could not be imported. "
             "Check dependencies."
@@ -21,6 +25,7 @@ def analyze_log(log_text):
         or "timed out" in normalized_log
     ):
         failure_type = "Timeout"
+        severity = "medium"
         message = (
             "An operation exceeded its time limit. "
             "Investigate execution time."
@@ -33,6 +38,7 @@ def analyze_log(log_text):
         or "failed test_" in normalized_log
     ):
         failure_type = "Test Failure"
+        severity = "medium"
         message = (
             "A test failed. Check the assertion "
             "and expected values."
@@ -43,6 +49,7 @@ def analyze_log(log_text):
         return {
             "status": "UNKNOWN",
             "failure_type": "Unclassified",
+            "severity": "unknown",
             "message": "No recognized failure pattern was found.",
             "evidence": None,
         }
@@ -59,9 +66,12 @@ def analyze_log(log_text):
     return {
         "status": "FAILED",
         "failure_type": failure_type,
+        "severity": severity,
         "message": message,
         "evidence": evidence,
     }
+
+
 def main():
     """Read a log file and print its analysis."""
 
