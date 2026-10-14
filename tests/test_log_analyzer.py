@@ -92,7 +92,20 @@ class TestLogAnalyzer(unittest.TestCase):
             result["evidence"],
             "ModuleNotFoundError: No module named 'requests'"
         )
-
+    def test_returns_evidence_for_test_failure(self):
+        log_text = (
+            "Running tests...\n"
+            "AssertionError: Expected 100, received 120.\n"
+            "Pipeline failed."
+        )
+    
+        result = analyze_log(log_text)
+    
+        self.assertEqual(result["failure_type"], "Test Failure")
+        self.assertEqual(
+            result["evidence"],
+            "AssertionError: Expected 100, received 120."
+        )
 
 if __name__ == "__main__":
     unittest.main()
