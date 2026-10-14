@@ -62,13 +62,19 @@ def analyze_log(log_text):
         ),
         None,
     )
-
     return {
         "status": "FAILED",
         "failure_type": failure_type,
         "severity": severity,
         "message": message,
         "evidence": evidence,
+        "suggestion": (
+            "Check requirements.txt and install the missing package."
+            if failure_type == "Dependency Failure"
+            else "Inspect slow operations, network calls, and timeout settings."
+            if failure_type == "Timeout"
+            else "Compare expected and actual values and inspect the failing test."
+        ),
     }
 
 
